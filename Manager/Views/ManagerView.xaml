@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Manager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="450" Width="725">
+    <Window.DataContext>
+        <local:Controller />
+    </Window.DataContext>
     <Grid>
-        
+        <ListBox x:Name="process_lb" HorizontalAlignment="Left" Height="383" Margin="10,26,0,0" VerticalAlignment="Top" Width="272" ItemsSource="{Binding ProcessMyList}"/>
+
     </Grid>
 </Window>
