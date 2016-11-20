@@ -21,7 +21,7 @@
         </Menu>
 
         <GroupBox Header="Prosesses" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Height="428" Width="295">
-            <ListBox ItemsSource="{Binding ProcessMyList}" SelectedItem="{Binding Path=SelectedProcessMy, Mode=TwoWay}" Margin="10"/>
+            <ListBox IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ProcessMyList}" SelectedItem="{Binding SelectedProcessMy}" Margin="10"/>
         </GroupBox>
         <GroupBox Header="Details" HorizontalAlignment="Left" Margin="310,25,0,0" VerticalAlignment="Top" Height="428" Width="506">
             <Grid Margin="0,0,0,0">
@@ -71,21 +71,21 @@
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Focusable" Value="False"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                         </ListBox>
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="Modules" Margin="192,221,10,0" VerticalAlignment="Top" Height="144">
                     <Grid Margin="4,4,0,0">
-                        <ListBox x:Name="modules_lb" ItemsSource="{Binding SelectedProcessMy.modulesList}" Visibility="{Binding Path=SelectedProcessMy.modulesList, TargetNullValue=Collapsed}" Margin="10">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Grid.Column="1" Text="{Binding ModuleName}"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                        <ListBox x:Name="modules_lb" ItemsSource="{Binding SelectedProcessMy.modulesList}" Margin="10">
                         </ListBox>
-                        <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Text="{Binding SelectedProcessMy.modulesWarning}" VerticalAlignment="Center" Visibility="{Binding Path=SelectedProcessMy.modulesList, TargetNullValue=Visible}"/>
                     </Grid>
                 </GroupBox>
+                <Button Command="{Binding killProcess}" Content="Kill" HorizontalAlignment="Left" Margin="10,376,0,0" VerticalAlignment="Top" Width="75"/>
             </Grid>
         </GroupBox>
 

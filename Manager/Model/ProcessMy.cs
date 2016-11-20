@@ -12,7 +12,9 @@ namespace Manager
     {
         public Process process;
         public String name { get; set; }
+        public int id { get; set; }
         public int threads { get; set; }
+        public bool isExist { get; set; }
         public int priority { get; set; }
         public String nonPagedSystemMemorySize { get; set; }
         public String pagedSystemMemorySize { get; set; }
@@ -21,16 +23,18 @@ namespace Manager
         public String virtualMemorySize { get; set; }
         public String modulesWarning { get; set; }
         public ProcessThreadCollection threadsList { get; set; }
-        public ProcessModuleCollection modulesList { get; set; }
+        public List<String> modulesList { get; set; }
         public String modulesWarrning { get; set; }
 
         public ProcessMy(Process process)
         {
+            modulesList = new List<String>();
             var th = new Thread(setModules);
-            th.Start();
+           // th.Start();
 
             this.process = process;
-            name = process.ProcessName;        
+            name = process.ProcessName;
+            id = process.Id;      
             threads = process.Threads.Count;
             priority = process.BasePriority;
             nonPagedSystemMemorySize = process.NonpagedSystemMemorySize64 + " b";
@@ -43,19 +47,21 @@ namespace Manager
 
         private void setModules()
         {
+            
             try
             {
-                modulesList = process.Modules;
+                foreach (ProcessModule module in process.Modules)
+                    modulesList.Add(module.ModuleName);
             }
             catch (Exception e)
             {
-                modulesWarrning = e.Message;
+                modulesList.Add("Access is denied");
             }
         }
 
         public override string ToString()
         {
-            return name;
+            return name + " (id: " + id + ")";
         }
     }
 }

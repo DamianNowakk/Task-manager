@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Windows.Input;
+using System.Threading;
 
 namespace Manager
 {
@@ -19,7 +21,7 @@ namespace Manager
             }
             set
             {
-                _processMyList = value.OrderBy(o => o.name).ToList(); ;
+                _processMyList = value;
                 OnPropertyChanged("ProcessMyList");
             }
         }
@@ -35,24 +37,45 @@ namespace Manager
             {
                 _selectedProcessMy = value;
                 OnPropertyChanged("SelectedProcessMy");
-            }
+            } 
         }
 
         public ManagerViewModels()
-        {      
+        {                 
             initProcess();
-            _selectedProcessMy = _processMyList[0];
-        }     
+            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += initProcessTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
+        }
 
         private void initProcess()
         {
+            int index = -1;
+            if (SelectedProcessMy != null)
+                index = ProcessMyList.IndexOf(SelectedProcessMy);
             List<ProcessMy> list = new List<ProcessMy>();
             foreach (Process process in Process.GetProcesses())
             {
                 list.Add(new ProcessMy(process));
-            }
-            ProcessMyList = list;
+            }          
+            ProcessMyList = list.OrderBy(o => o.name).ThenBy(x => x.id).ToList();           
+            if(index != -1)
+                SelectedProcessMy = ProcessMyList[index];
         }
+
+        private void initProcessTimer_Tick(object sender, EventArgs e)
+        {
+            initProcess();
+        }
+
+        public ICommand killProcess { get { return new RelayCommand(killProcessExcute); } }
+        public void killProcessExcute()
+        {
+            SelectedProcessMy.process.Kill();
+            initProcess();
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
