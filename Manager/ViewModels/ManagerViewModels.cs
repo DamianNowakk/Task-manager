@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace Manager
 {
-    class Controller : INotifyPropertyChanged
+    class ManagerViewModels : INotifyPropertyChanged
     {
         private List<ProcessMy> _processMyList;
         public List<ProcessMy> ProcessMyList
@@ -19,23 +19,39 @@ namespace Manager
             }
             set
             {
-                _processMyList = value;
+                _processMyList = value.OrderBy(o => o.name).ToList(); ;
                 OnPropertyChanged("ProcessMyList");
             }
         }
 
-        public Controller()
+        private ProcessMy _selectedProcessMy;
+        public ProcessMy SelectedProcessMy
         {
-            _processMyList = new List<ProcessMy>();
+            get
+            {
+                return _selectedProcessMy;
+            }
+            set
+            {
+                _selectedProcessMy = value;
+                OnPropertyChanged("SelectedProcessMy");
+            }
+        }
+
+        public ManagerViewModels()
+        {      
             initProcess();
+            _selectedProcessMy = _processMyList[0];
         }     
 
         private void initProcess()
         {
-            foreach(Process process in Process.GetProcesses())
+            List<ProcessMy> list = new List<ProcessMy>();
+            foreach (Process process in Process.GetProcesses())
             {
-                _processMyList.Add(new ProcessMy(process));
+                list.Add(new ProcessMy(process));
             }
+            ProcessMyList = list;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

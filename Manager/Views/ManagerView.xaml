@@ -5,12 +5,89 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Manager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="725">
+        Title="MainWindow" Height="493.868" Width="834.358">
     <Window.DataContext>
-        <local:Controller />
+        <local:ManagerViewModels />
     </Window.DataContext>
     <Grid>
-        <ListBox x:Name="process_lb" HorizontalAlignment="Left" Height="383" Margin="10,26,0,0" VerticalAlignment="Top" Width="272" ItemsSource="{Binding ProcessMyList}"/>
+        <Menu Grid.Row="0" Height="20" VerticalAlignment="Top" >
+            <MenuItem Header="Menu" Width="50" Height="20">
+                <MenuItem Header="Nowy"/>
+                <MenuItem Header="Zapisz"/>
+                <MenuItem Header="Wczytaj"/>
+                <Separator/>
+                <MenuItem Header="Zakoncz"/>
+            </MenuItem>
+        </Menu>
+
+        <GroupBox Header="Prosesses" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Height="428" Width="295">
+            <ListBox ItemsSource="{Binding ProcessMyList}" SelectedItem="{Binding Path=SelectedProcessMy, Mode=TwoWay}" Margin="10"/>
+        </GroupBox>
+        <GroupBox Header="Details" HorizontalAlignment="Left" Margin="310,25,0,0" VerticalAlignment="Top" Height="428" Width="506">
+            <Grid Margin="0,0,0,0">
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="69,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.name}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,31,0,0" TextWrapping="Wrap" Text="Priority:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="69,31,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.priority}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,52,0,0" TextWrapping="Wrap" Text="Thread:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="69,52,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.threads}" VerticalAlignment="Top"/>
+                <GroupBox Header="Memory" Margin="192,88,10,0" VerticalAlignment="Top" Height="128">
+                    <Grid Margin="4,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="35*" />
+                            <ColumnDefinition Width="57*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Text="Nonpaged system:" Width="99"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedProcessMy.nonPagedSystemMemorySize}" Width="Auto"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Text="Pageable system:" Width="91"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedProcessMy.pagedSystemMemorySize}" Width="Auto"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Text="Private :" Width="42"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedProcessMy.privateMemorySize}" Width="Auto"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Text="Paged memory:" Width="83"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedProcessMy.pagedMemorySize}" Width="Auto"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" HorizontalAlignment="Left" Text="Virtual:" Width="37"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedProcessMy.virtualMemorySize}" HorizontalAlignment="Left" Width="Auto"/>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Threads" Margin="10,88,307,0" VerticalAlignment="Top" Height="277">
+                    <Grid Margin="4,4,0,0">
+                        <ListBox ItemsSource="{Binding SelectedProcessMy.threadsList}" Margin="10">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="id: "/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Id}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Modules" Margin="192,221,10,0" VerticalAlignment="Top" Height="144">
+                    <Grid Margin="4,4,0,0">
+                        <ListBox x:Name="modules_lb" ItemsSource="{Binding SelectedProcessMy.modulesList}" Visibility="{Binding Path=SelectedProcessMy.modulesList, TargetNullValue=Collapsed}" Margin="10">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Grid.Column="1" Text="{Binding ModuleName}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <TextBlock x:Name="textBlock" HorizontalAlignment="Center" Text="{Binding SelectedProcessMy.modulesWarning}" VerticalAlignment="Center" Visibility="{Binding Path=SelectedProcessMy.modulesList, TargetNullValue=Visible}"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
 
     </Grid>
 </Window>
