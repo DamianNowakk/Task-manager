@@ -7,22 +7,47 @@ using System.Windows.Input;
 
 namespace Manager
 {
-    public class RelayCommand : ICommand
+    public class RelayCommand<T> : ICommand
     {
-        private readonly Func<Boolean> _canExecute;
-        private readonly Action _execute;
+        #region Fields
 
-        public RelayCommand(Action execute)
-          : this(execute, null)
+        private readonly Action<T> _execute = null;
+        private readonly Predicate<T> _canExecute = null;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Creates a new command that can always execute.
+        /// </summary>
+        /// <param name="execute">The execution logic.</param>
+        public RelayCommand(Action<T> execute)
+            : this(execute, null)
         {
         }
 
-        public RelayCommand(Action execute, Func<Boolean> canExecute)
+        /// <summary>
+        /// Creates a new command with conditional execution.
+        /// </summary>
+        /// <param name="execute">The execution logic.</param>
+        /// <param name="canExecute">The execution status logic.</param>
+        public RelayCommand(Action<T> execute, Predicate<T> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
+
             _execute = execute;
             _canExecute = canExecute;
+        }
+
+        #endregion
+
+        #region ICommand Members
+
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute == null ? true : _canExecute((T)parameter);
         }
 
         public event EventHandler CanExecuteChanged
@@ -39,14 +64,11 @@ namespace Manager
             }
         }
 
-        public Boolean CanExecute(Object parameter)
+        public void Execute(object parameter)
         {
-            return _canExecute == null ? true : _canExecute();
+            _execute((T)parameter);
         }
 
-        public void Execute(Object parameter)
-        {
-            _execute();
-        }
+        #endregion
     }
 }

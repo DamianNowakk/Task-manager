@@ -10,7 +10,8 @@ namespace Manager
 {
     class ProcessMy
     {
-        public Process process;
+        public bool isChcecked { get; set; }
+        public Process process { get; set; }
         public String name { get; set; }
         public int id { get; set; }
         public int threads { get; set; }
@@ -24,17 +25,23 @@ namespace Manager
         public String modulesWarning { get; set; }
         public ProcessThreadCollection threadsList { get; set; }
         public List<String> modulesList { get; set; }
+        public String mainModules { get; set; }
         public String modulesWarrning { get; set; }
 
         public ProcessMy(Process process)
         {
+            isChcecked = false;
             modulesList = new List<String>();
             var th = new Thread(setModules);
-           // th.Start();
+            th.Start();
+            refresh(process);
+        }
 
+        public void refresh(Process process)
+        {
             this.process = process;
             name = process.ProcessName;
-            id = process.Id;      
+            id = process.Id;
             threads = process.Threads.Count;
             priority = process.BasePriority;
             nonPagedSystemMemorySize = process.NonpagedSystemMemorySize64 + " b";
@@ -47,14 +54,11 @@ namespace Manager
 
         private void setModules()
         {
-            
-            try
-            {
+            try {               
                 foreach (ProcessModule module in process.Modules)
                     modulesList.Add(module.ModuleName);
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 modulesList.Add("Access is denied");
             }
         }
@@ -62,6 +66,13 @@ namespace Manager
         public override string ToString()
         {
             return name + " (id: " + id + ")";
+        }
+
+        public bool CompareTo(Process obj)
+        {
+            if (this.id == obj.Id && this.name.Equals(obj.ProcessName))
+                return true;
+            return false;
         }
     }
 }

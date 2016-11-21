@@ -20,8 +20,22 @@
             </MenuItem>
         </Menu>
 
-        <GroupBox Header="Prosesses" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Height="428" Width="295">
-            <ListBox IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ProcessMyList}" SelectedItem="{Binding SelectedProcessMy}" Margin="10"/>
+        <GroupBox Header="Prosesses" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Height="428" Width="295" ToolTip="">
+            <ListBox IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ProcessMyList}" SelectedItem="{Binding SelectedProcessMy}" Margin="10">
+                <ListBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{Binding killProcess}" Header="kill"/>
+                        <MenuItem Header="Change priority">
+                            <MenuItem Command="{Binding changePriority}" CommandParameter="Realtime" Header="Realtime"/>
+                            <MenuItem Command="{Binding changePriority}" CommandParameter="High" Header="High"/>
+                            <MenuItem Command="{Binding changePriority}" CommandParameter="Above normal" Header="Above normal"/>
+                            <MenuItem Command="{Binding changePriority}" CommandParameter="Normal" Header="Normal"/>
+                            <MenuItem Command="{Binding changePriority}" CommandParameter="Below normal" Header="Below normal"/>
+                            <MenuItem Command="{Binding changePriority}" CommandParameter="Low" Header="Low"/>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
         </GroupBox>
         <GroupBox Header="Details" HorizontalAlignment="Left" Margin="310,25,0,0" VerticalAlignment="Top" Height="428" Width="506">
             <Grid Margin="0,0,0,0">
@@ -29,8 +43,6 @@
                 <TextBlock HorizontalAlignment="Left" Margin="69,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.name}" VerticalAlignment="Top"/>
                 <TextBlock HorizontalAlignment="Left" Margin="10,31,0,0" TextWrapping="Wrap" Text="Priority:" VerticalAlignment="Top"/>
                 <TextBlock HorizontalAlignment="Left" Margin="69,31,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.priority}" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="10,52,0,0" TextWrapping="Wrap" Text="Thread:" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="69,52,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.threads}" VerticalAlignment="Top"/>
                 <GroupBox Header="Memory" Margin="192,88,10,0" VerticalAlignment="Top" Height="128">
                     <Grid Margin="4,4,0,0">
                         <Grid.ColumnDefinitions>
@@ -57,8 +69,10 @@
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="Threads" Margin="10,88,307,0" VerticalAlignment="Top" Height="277">
-                    <Grid Margin="4,4,0,0">
-                        <ListBox ItemsSource="{Binding SelectedProcessMy.threadsList}" Margin="10">
+                    <Grid Margin="4,10,0,0">
+                        <TextBlock HorizontalAlignment="Left" Margin="1,-11,0,0" TextWrapping="Wrap" Text="Count:" VerticalAlignment="Top"/>
+                        <TextBlock HorizontalAlignment="Left" Margin="41,-11,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.threads}" VerticalAlignment="Top"/>
+                        <ListBox ItemsSource="{Binding SelectedProcessMy.threadsList}" Margin="0,10">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="0,0">
@@ -71,21 +85,22 @@
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-                            <ListBox.ItemContainerStyle>
+                            <!--<ListBox.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListBoxItem}">
                                     <Setter Property="Focusable" Value="False"/>
                                 </Style>
-                            </ListBox.ItemContainerStyle>
+                            </ListBox.ItemContainerStyle>-->
                         </ListBox>
                     </Grid>
                 </GroupBox>
                 <GroupBox Header="Modules" Margin="192,221,10,0" VerticalAlignment="Top" Height="144">
-                    <Grid Margin="4,4,0,0">
-                        <ListBox x:Name="modules_lb" ItemsSource="{Binding SelectedProcessMy.modulesList}" Margin="10">
+                    <Grid Margin="4,10,0,0">
+                        <TextBlock HorizontalAlignment="Left" Margin="1,-11,0,0" TextWrapping="Wrap" Text="Count:" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
+                        <TextBlock HorizontalAlignment="Left" Margin="41,-11,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.modulesList.Count}" VerticalAlignment="Top"/>
+                        <ListBox ItemsSource="{Binding SelectedProcessMy.modulesList}" Margin="0,10" Grid.ColumnSpan="2">
                         </ListBox>
                     </Grid>
                 </GroupBox>
-                <Button Command="{Binding killProcess}" Content="Kill" HorizontalAlignment="Left" Margin="10,376,0,0" VerticalAlignment="Top" Width="75"/>
             </Grid>
         </GroupBox>
 
