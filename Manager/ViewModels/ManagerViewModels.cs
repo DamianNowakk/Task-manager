@@ -14,13 +14,11 @@ namespace Manager
 {
     class ManagerViewModels : INotifyPropertyChanged
     {
-        private ObservableCollection<string> test;
         private ObservableCollection<ProcessMy> _processMyList;
         public ObservableCollection<ProcessMy> ProcessMyList
         {
             get
             {
-                var sorted = _processMyList.OrderBy(x => x.name).ThenBy(x => x.id);
                 return _processMyList;
             }
             set
@@ -44,6 +42,20 @@ namespace Manager
             } 
         }
 
+        private ProcessThread _selectedThreadsMy;
+        public ProcessThread SelectedThreadMy
+        {
+            get
+            {
+                return _selectedThreadsMy;
+            }
+            set
+            {
+                _selectedThreadsMy = value;
+                OnPropertyChanged("SelectedThreadMy");
+            }
+        }
+
         public ManagerViewModels()
         {
             _processMyList = new ObservableCollection<ProcessMy>();
@@ -64,6 +76,7 @@ namespace Manager
 
         private void update()
         {
+            ProcessThread tmp = _selectedThreadsMy;
             var processes = Process.GetProcesses();
             for (int i = 0; i < processes.Length; i++) {
                 if (ProcessMyList[i].CompareTo(processes[i]))
@@ -98,6 +111,7 @@ namespace Manager
             for (int i = remove.Count - 1; i >= 0; i--) {
                 ProcessMyList.RemoveAt(remove[i]);
             }
+
             OnPropertyChanged("SelectedProcessMy");
         }
 

@@ -41,9 +41,9 @@
             <Grid Margin="0,0,0,0">
                 <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
                 <TextBlock HorizontalAlignment="Left" Margin="69,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.name}" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="10,31,0,0" TextWrapping="Wrap" Text="Priority:" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="69,31,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.priority}" VerticalAlignment="Top"/>
-                <GroupBox Header="Memory" Margin="192,88,10,0" VerticalAlignment="Top" Height="128">
+                <TextBlock HorizontalAlignment="Left" Margin="421,10,0,0" TextWrapping="Wrap" Text="Priority:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="466,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.priority}" VerticalAlignment="Top"/>
+                <GroupBox Header="Memory" Margin="153,182,10,0" VerticalAlignment="Top" Height="99">
                     <Grid Margin="4,4,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="35*" />
@@ -68,11 +68,11 @@
                         <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedProcessMy.virtualMemorySize}" HorizontalAlignment="Left" Width="Auto"/>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Threads" Margin="10,88,307,0" VerticalAlignment="Top" Height="277">
+                <GroupBox Header="Threads" Margin="10,38,346,0" VerticalAlignment="Top" Height="243">
                     <Grid Margin="4,10,0,0">
                         <TextBlock HorizontalAlignment="Left" Margin="1,-11,0,0" TextWrapping="Wrap" Text="Count:" VerticalAlignment="Top"/>
                         <TextBlock HorizontalAlignment="Left" Margin="41,-11,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.threads}" VerticalAlignment="Top"/>
-                        <ListBox ItemsSource="{Binding SelectedProcessMy.threadsList}" Margin="0,10">
+                        <ListBox x:Name="thread_list" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding SelectedProcessMy.threadsList}" SelectedItem="{Binding SelectedThreadMy}" Margin="0,10">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="0,0">
@@ -85,20 +85,46 @@
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-                            <!--<ListBox.ItemContainerStyle>
-                                <Style TargetType="{x:Type ListBoxItem}">
-                                    <Setter Property="Focusable" Value="False"/>
-                                </Style>
-                            </ListBox.ItemContainerStyle>-->
                         </ListBox>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Modules" Margin="192,221,10,0" VerticalAlignment="Top" Height="144">
+                <GroupBox Header="Modules" Margin="10,286,10,0" VerticalAlignment="Top" Height="120">
                     <Grid Margin="4,10,0,0">
                         <TextBlock HorizontalAlignment="Left" Margin="1,-11,0,0" TextWrapping="Wrap" Text="Count:" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                         <TextBlock HorizontalAlignment="Left" Margin="41,-11,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.modulesList.Count}" VerticalAlignment="Top"/>
                         <ListBox ItemsSource="{Binding SelectedProcessMy.modulesList}" Margin="0,10" Grid.ColumnSpan="2">
                         </ListBox>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Thread details" Margin="153,38,10,0" VerticalAlignment="Top" Height="144">
+                    <Grid Margin="4,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="28*" />
+                            <ColumnDefinition Width="41*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Text="Id:" Width="Auto"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedThreadMy.Id}" Width="Auto"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Text="Current priority:" Width="Auto"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedThreadMy.CurrentPriority}" Width="Auto"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" Text="Base priority :" Width="Auto"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedThreadMy.BasePriority}" Width="Auto"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" Text="Start time:" Width="Auto"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedThreadMy.StartTime}" Width="Auto"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" HorizontalAlignment="Left" Text="Total processor time:" Width="Auto"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedThreadMy.TotalProcessorTime}" Width="Auto"/>
+                        <TextBlock Grid.Row="5" Grid.Column="0" HorizontalAlignment="Left" Text="User processor time:" Width="Auto"/>
+                        <TextBlock Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedThreadMy.UserProcessorTime}" Width="Auto"/>
+                        <TextBlock Grid.Row="6" Grid.Column="0" HorizontalAlignment="Left" Text="Thread state:" Width="Auto"/>
+                        <TextBlock Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding SelectedThreadMy.ThreadState}" Width="Auto"/>
                     </Grid>
                 </GroupBox>
             </Grid>
