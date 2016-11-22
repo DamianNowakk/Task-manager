@@ -10,6 +10,7 @@ namespace Manager
 {
     class ProcessMy
     {
+        public bool isLive { get; set; }
         public bool isChcecked { get; set; }
         public Process process { get; set; }
         public String name { get; set; }
@@ -30,6 +31,7 @@ namespace Manager
 
         public ProcessMy(Process process)
         {
+            isLive = false;
             isChcecked = false;
             modulesList = new List<String>();
             var th = new Thread(setModules);
@@ -54,9 +56,14 @@ namespace Manager
 
         private void setModules()
         {
+            try {
+                mainModules = process.MainModule.FileName;
+            }
+            catch (Exception e) {
+            }
             try {               
                 foreach (ProcessModule module in process.Modules)
-                    modulesList.Add(module.ModuleName);
+                    modulesList.Add(module.FileName);
             }
             catch (Exception e) {
                 modulesList.Add("Access is denied");

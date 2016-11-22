@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Collections;
 
 namespace Manager
 {
@@ -56,14 +57,23 @@ namespace Manager
             }
         }
 
+        Hashtable processThreadList;
+
         public ManagerViewModels()
         {
+
+            processThreadList = new Hashtable();
             _processMyList = new ObservableCollection<ProcessMy>();
             initProcess();
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += initProcessTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
+        }
+
+        private void initProcessTimer_Tick(object sender, EventArgs e)
+        {
+            update();
         }
 
         private void initProcess()
@@ -76,13 +86,14 @@ namespace Manager
 
         private void update()
         {
-            ProcessThread tmp = _selectedThreadsMy;
+            ProcessThread tmpProcessThread = _selectedThreadsMy;
             var processes = Process.GetProcesses();
             for (int i = 0; i < processes.Length; i++) {
                 if (ProcessMyList[i].CompareTo(processes[i]))
                     ProcessMyList[i].refresh(processes[i]);
-                else
+                else {
                     ProcessMyList.Insert(i, new ProcessMy(processes[i]));
+                }
             }
             bool add;
             int oldd = ProcessMyList.Count;
@@ -113,12 +124,23 @@ namespace Manager
             }
 
             OnPropertyChanged("SelectedProcessMy");
+            try
+            {
+                for (int i = 0; i < _selectedProcessMy.threadsList.Count; i++)
+                {
+                    if (_selectedProcessMy.threadsList[i].Id == tmpProcessThread.Id)
+                    {
+                        SelectedThreadMy = _selectedProcessMy.threadsList[i];
+                        break;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+
+            }
         }
 
-        private void initProcessTimer_Tick(object sender, EventArgs e)
-        {
-            update();
-        }
 
         public ICommand killProcess { get { return new RelayCommand<object>(killProcessExcute); } }
         public void killProcessExcute(object obj)
@@ -160,6 +182,29 @@ namespace Manager
                 MessageBox.Show(e.Message, "Error");
             }
             update();
+        }
+
+        public ICommand runProccess { get { return new RelayCommand<ProcessMy>(runProccessExcute); } }
+        public void runProccessExcute(ProcessMy obj)
+        {
+            if(obj.mainModules != null) {
+                if(obj.isLive) {
+                    try {
+                        processThreadList.Add(obj.mainModules, obj);
+                    } catch {
+
+                    }
+                }
+                else {
+                    try {
+                        processThreadList.Remove(obj.mainModules);
+                    }
+                    catch {
+
+                    }
+                }
+                
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -33,16 +33,29 @@
                             <MenuItem Command="{Binding changePriority}" CommandParameter="Below normal" Header="Below normal"/>
                             <MenuItem Command="{Binding changePriority}" CommandParameter="Low" Header="Low"/>
                         </MenuItem>
+                        <MenuItem Command="{Binding runProccess}" CommandParameter="{Binding SelectedProcessMy}" Header="set run"/>
                     </ContextMenu>
                 </ListBox.ContextMenu>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="1" Text="{Binding}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
         </GroupBox>
         <GroupBox Header="Details" HorizontalAlignment="Left" Margin="310,25,0,0" VerticalAlignment="Top" Height="428" Width="506">
             <Grid Margin="0,0,0,0">
-                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="69,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.name}" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="421,10,0,0" TextWrapping="Wrap" Text="Priority:" VerticalAlignment="Top"/>
-                <TextBlock HorizontalAlignment="Left" Margin="466,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.priority}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="86,10,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="125,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.name}" VerticalAlignment="Top" RenderTransformOrigin="-1.314,0.313"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Priority:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="55,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.priority}" VerticalAlignment="Top"/>
+                <CheckBox Command="{Binding runProccess}" CommandParameter="{Binding SelectedProcessMy}" IsChecked="{Binding SelectedProcessMy.isLive}" Content="run" HorizontalAlignment="Left" Margin="446,11,0,0" VerticalAlignment="Top"/>
                 <GroupBox Header="Memory" Margin="153,182,10,0" VerticalAlignment="Top" Height="99">
                     <Grid Margin="4,4,0,0">
                         <Grid.ColumnDefinitions>
