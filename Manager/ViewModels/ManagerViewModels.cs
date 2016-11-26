@@ -57,12 +57,14 @@ namespace Manager
             }
         }
 
-        Hashtable processThreadList;
+        List<ProcessMy> runProcessThreadList;
+        List<ProcessMy> startProcessThreadList;
 
         public ManagerViewModels()
         {
 
-            processThreadList = new Hashtable();
+            runProcessThreadList = new List<ProcessMy>();
+            startProcessThreadList = new List<ProcessMy>();
             _processMyList = new ObservableCollection<ProcessMy>();
             initProcess();
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
@@ -135,7 +137,7 @@ namespace Manager
                     }
                 }
             }
-            catch(Exception e)
+            catch
             {
 
             }
@@ -190,14 +192,14 @@ namespace Manager
             if(obj.mainModules != null) {
                 if(obj.isLive) {
                     try {
-                        processThreadList.Add(obj.mainModules, obj);
+                        runProcessThreadList.Add(obj);
                     } catch {
 
                     }
                 }
                 else {
                     try {
-                        processThreadList.Remove(obj.mainModules);
+                        runProcessThreadList.Remove(obj);
                     }
                     catch {
 
