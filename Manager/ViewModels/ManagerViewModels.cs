@@ -10,6 +10,7 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Collections;
+using System.Management;
 
 namespace Manager
 {
@@ -33,12 +34,20 @@ namespace Manager
         public ProcessMy SelectedProcessMy
         {
             get
-            {
+            {          
                 return _selectedProcessMy;
             }
             set
             {
-                _selectedProcessMy = value;
+                value.setModules();
+                if (value.mainModules == null)
+                    _selectedProcessMy = null;
+                else
+                {
+                    if (runProcessThreadList.FirstOrDefault(p => p.mainModules.Equals(value.mainModules)) != null)
+                        value.isLive = true;
+                    _selectedProcessMy = value;
+                }
                 OnPropertyChanged("SelectedProcessMy");
             } 
         }
@@ -57,20 +66,21 @@ namespace Manager
             }
         }
 
+        private Object thisLock = new Object();
         List<ProcessMy> runProcessThreadList;
-        List<ProcessMy> startProcessThreadList;
 
         public ManagerViewModels()
         {
 
             runProcessThreadList = new List<ProcessMy>();
-            startProcessThreadList = new List<ProcessMy>();
             _processMyList = new ObservableCollection<ProcessMy>();
             initProcess();
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += initProcessTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
+            Thread thr = new Thread(run);
+            thr.Start();
         }
 
         private void initProcessTimer_Tick(object sender, EventArgs e)
@@ -124,17 +134,22 @@ namespace Manager
             for (int i = remove.Count - 1; i >= 0; i--) {
                 ProcessMyList.RemoveAt(remove[i]);
             }
-
-            OnPropertyChanged("SelectedProcessMy");
             try
             {
-                for (int i = 0; i < _selectedProcessMy.threadsList.Count; i++)
+                if (SelectedProcessMy != null)
                 {
-                    if (_selectedProcessMy.threadsList[i].Id == tmpProcessThread.Id)
+                    for (int i = 0; i < _selectedProcessMy.threadsList.Count; i++)
                     {
-                        SelectedThreadMy = _selectedProcessMy.threadsList[i];
-                        break;
+                        if (_selectedProcessMy.threadsList[i].Id == tmpProcessThread.Id)
+                        {
+                            SelectedThreadMy = _selectedProcessMy.threadsList[i];
+                            break;
+                        }
                     }
+                }
+                else
+                {
+
                 }
             }
             catch
@@ -178,12 +193,14 @@ namespace Manager
                     default:
                         priority = ProcessPriorityClass.Normal; break;
                 }
-                SelectedProcessMy.process.PriorityClass = priority;
+                SelectedProcessMy.process.PriorityClass = priority;               
+                update();
+                SelectedProcessMy = SelectedProcessMy;
             }
             catch (Exception e) {
                 MessageBox.Show(e.Message, "Error");
             }
-            update();
+           
         }
 
         public ICommand runProccess { get { return new RelayCommand<ProcessMy>(runProccessExcute); } }
@@ -191,22 +208,63 @@ namespace Manager
         {
             if(obj.mainModules != null) {
                 if(obj.isLive) {
-                    try {
+                    lock (thisLock)
+                    {
                         runProcessThreadList.Add(obj);
-                    } catch {
-
                     }
                 }
                 else {
-                    try {
-                        runProcessThreadList.Remove(obj);
+                    lock (thisLock)
+                    {
+                        runProcessThreadList.Remove(runProcessThreadList.First(p => p.mainModules.Equals(obj.mainModules)));
                     }
-                    catch {
+                }            
+            }
+        }
+      
 
+        private void run()
+        {
+            while (true)
+            {
+                Thread.Sleep(2000);
+                lock (thisLock)
+                {
+                    var processes = setCommandLine();
+                    foreach (var process in runProcessThreadList.ToList())
+                    {
+                        var exist = processes.FirstOrDefault(p => p.Equals(process.mainModules));
+                        if (exist == null)
+                        {
+                            try
+                            {
+                                var newProcess = new Process { StartInfo = { FileName = process.mainModules, Arguments = process.command } };
+                                newProcess.Start();
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Error, bad command");
+                                runProcessThreadList.Remove(process);
+                            }
+                        }
                     }
                 }
-                
             }
+        }
+
+        private List<String> setCommandLine()
+        {
+            var commandLine = new List<String>();
+            using (var searcher = new ManagementObjectSearcher("SELECT ExecutablePath FROM Win32_Process"))
+            {
+                foreach (var @object in searcher.Get())
+                {
+                    commandLine.Add((string)@object["ExecutablePath"]);
+                    if (commandLine[commandLine.Count - 1] == null)
+                        commandLine.RemoveAt(commandLine.Count - 1);
+                }
+            }
+            return commandLine;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

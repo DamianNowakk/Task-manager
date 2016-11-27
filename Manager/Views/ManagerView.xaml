@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Manager"
         mc:Ignorable="d"
-        Title="MainWindow" Height="493.868" Width="834.358">
+        Title="MainWindow" Height="546.868" Width="834.358">
     <Window.DataContext>
         <local:ManagerViewModels />
     </Window.DataContext>
@@ -20,7 +20,7 @@
             </MenuItem>
         </Menu>
 
-        <GroupBox Header="Prosesses" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Height="428" Width="295" ToolTip="">
+        <GroupBox Header="Prosesses" HorizontalAlignment="Left" Margin="10,25,0,10" Width="295" ToolTip="">
             <ListBox IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding ProcessMyList}" SelectedItem="{Binding SelectedProcessMy}" Margin="10">
                 <ListBox.ContextMenu>
                     <ContextMenu>
@@ -49,14 +49,21 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </GroupBox>
-        <GroupBox Header="Details" HorizontalAlignment="Left" Margin="310,25,0,0" VerticalAlignment="Top" Height="428" Width="506">
+        <GroupBox Header="Details" HorizontalAlignment="Left" Margin="310,25,0,10" Width="506">
             <Grid Margin="0,0,0,0">
                 <TextBlock HorizontalAlignment="Left" Margin="86,10,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
                 <TextBlock HorizontalAlignment="Left" Margin="125,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.name}" VerticalAlignment="Top" RenderTransformOrigin="-1.314,0.313"/>
                 <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Priority:" VerticalAlignment="Top"/>
                 <TextBlock HorizontalAlignment="Left" Margin="55,10,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.priority}" VerticalAlignment="Top"/>
-                <CheckBox Command="{Binding runProccess}" CommandParameter="{Binding SelectedProcessMy}" IsChecked="{Binding SelectedProcessMy.isLive}" Content="run" HorizontalAlignment="Left" Margin="446,11,0,0" VerticalAlignment="Top"/>
-                <GroupBox Header="Memory" Margin="153,182,10,0" VerticalAlignment="Top" Height="99">
+                <GroupBox Header="Run" Margin="10,31,10,0" ToolTip="" RenderTransformOrigin="0.5,0.5" Height="55" VerticalAlignment="Top">
+                    <Grid>
+
+                        <CheckBox Command="{Binding runProccess}" CommandParameter="{Binding SelectedProcessMy}" IsChecked="{Binding SelectedProcessMy.isLive}" Content="run" HorizontalAlignment="Left" Margin="423,8,0,0" VerticalAlignment="Top"/>
+                        <TextBlock HorizontalAlignment="Right" Margin="0,8,394,0" TextWrapping="Wrap" Text="Command:" Height="16" VerticalAlignment="Top"/>
+                        <TextBox HorizontalAlignment="Left" Margin="73,5,0,10" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.command}" Width="345"/>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Memory" Margin="153,225,10,0" VerticalAlignment="Top" Height="104" IsEnabled="False">
                     <Grid Margin="4,4,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="35*" />
@@ -81,7 +88,7 @@
                         <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedProcessMy.virtualMemorySize}" HorizontalAlignment="Left" Width="Auto"/>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Threads" Margin="10,38,346,0" VerticalAlignment="Top" Height="243">
+                <GroupBox Header="Threads" Margin="10,86,346,0" VerticalAlignment="Top" Height="243">
                     <Grid Margin="4,10,0,0">
                         <TextBlock HorizontalAlignment="Left" Margin="1,-11,0,0" TextWrapping="Wrap" Text="Count:" VerticalAlignment="Top"/>
                         <TextBlock HorizontalAlignment="Left" Margin="41,-11,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.threads}" VerticalAlignment="Top"/>
@@ -101,7 +108,7 @@
                         </ListBox>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Modules" Margin="10,286,10,0" VerticalAlignment="Top" Height="120">
+                <GroupBox Header="Modules" Margin="10,329,10,10">
                     <Grid Margin="4,10,0,0">
                         <TextBlock HorizontalAlignment="Left" Margin="1,-11,0,0" TextWrapping="Wrap" Text="Count:" VerticalAlignment="Top" Grid.ColumnSpan="2"/>
                         <TextBlock HorizontalAlignment="Left" Margin="41,-11,0,0" TextWrapping="Wrap" Text="{Binding SelectedProcessMy.modulesList.Count}" VerticalAlignment="Top"/>
@@ -109,7 +116,7 @@
                         </ListBox>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Thread details" Margin="153,38,10,0" VerticalAlignment="Top" Height="144">
+                <GroupBox Header="Thread details" Margin="153,86,10,0" VerticalAlignment="Top" Height="144">
                     <Grid Margin="4,4,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="28*" />
@@ -141,6 +148,16 @@
                     </Grid>
                 </GroupBox>
             </Grid>
+            <GroupBox.Style>
+                <Style TargetType="GroupBox">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedProcessMy}" Value="{x:Null}">
+                            <Setter Property="BorderBrush" Value="Red"></Setter>
+                            <Setter Property="IsEnabled" Value="False"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </GroupBox.Style>
         </GroupBox>
 
     </Grid>
