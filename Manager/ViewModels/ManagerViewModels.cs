@@ -134,27 +134,17 @@ namespace Manager
             for (int i = remove.Count - 1; i >= 0; i--) {
                 ProcessMyList.RemoveAt(remove[i]);
             }
-            try
+
+            if (SelectedProcessMy != null)
             {
-                if (SelectedProcessMy != null)
+                for (int i = 0; i < _selectedProcessMy.threadsList.Count; i++)
                 {
-                    for (int i = 0; i < _selectedProcessMy.threadsList.Count; i++)
+                    if (_selectedProcessMy.threadsList[i].Id == tmpProcessThread.Id)
                     {
-                        if (_selectedProcessMy.threadsList[i].Id == tmpProcessThread.Id)
-                        {
-                            SelectedThreadMy = _selectedProcessMy.threadsList[i];
-                            break;
-                        }
+                        SelectedThreadMy = _selectedProcessMy.threadsList[i];
+                        break;
                     }
                 }
-                else
-                {
-
-                }
-            }
-            catch
-            {
-
             }
         }
 
